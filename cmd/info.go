@@ -3,28 +3,28 @@ package cmd
 import (
 	"strings"
 
-	"github.com/PrivatePuffin/public/clustertool/pkg/info"
+	"github.com/PrivatePuffin/public/shem/pkg/info"
 	"github.com/spf13/cobra"
 )
 
 var infoLongHelp = strings.TrimSpace(`
-clustertool is a tool to help you easily deploy and maintain a Talos Kubernetes Cluster.
+shem is a tool to help you easily deploy and maintain a Talos Kubernetes Cluster.
 
 
 Workflow:
   Create talconfig.yaml file defining your nodes information like so:
 
  Available commands
-  > clustertool init
-  > clustertool genconfig
+  > shem init
+  > shem genconfig
 
 `)
 
 var infoCmd = &cobra.Command{
 	Use:     "info",
-	Short:   "Prints information about the clustertool binary",
+	Short:   "Prints information about the shem binary",
 	Long:    infoLongHelp,
-	Example: "clustertool info",
+	Example: "shem info",
 	Run: func(cmd *cobra.Command, args []string) {
 		info.NewInfo().Print()
 	},

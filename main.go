@@ -8,8 +8,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/PrivatePuffin/public/clustertool/cmd"
-	"github.com/PrivatePuffin/public/clustertool/pkg/helper"
+	"github.com/PrivatePuffin/public/shem/cmd"
+	"github.com/PrivatePuffin/public/shem/pkg/helper"
 	"github.com/go-logr/zerologr"
 	k8slog "sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -65,7 +65,7 @@ func main() {
 	k8slog.SetLogger(logger)
 
 	fmt.Printf("\n%s\n", helper.Logo)
-	fmt.Printf("---\nClustertool Version: %s\n---\n", Version)
+	fmt.Printf("---\nshem Version: %s\n---\n", Version)
 
 	helper.CheckSystemTime()
 	helper.CheckReqDomains()

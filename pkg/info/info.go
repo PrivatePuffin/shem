@@ -46,7 +46,7 @@ func NewInfo() *Data {
 
 func (d *Data) Print() {
 	log.Info().Msgf(`
-clustertool is a tool for managing PrivatePuffin charts.
+shem is a tool for managing PrivatePuffin charts.
 
 Go
     Version: %s

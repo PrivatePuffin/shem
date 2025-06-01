@@ -1,4 +1,4 @@
-module github.com/PrivatePuffin/public/clustertool
+module github.com/PrivatePuffin/public/shem
 
 go 1.24.0
 

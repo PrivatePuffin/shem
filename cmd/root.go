@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/PrivatePuffin/public/clustertool/pkg/helper"
+	"github.com/PrivatePuffin/public/shem/pkg/helper"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 )
@@ -12,7 +12,7 @@ import (
 var thisversion string
 
 var RootCmd = &cobra.Command{
-	Use:           "clustertool",
+	Use:           "shem",
 	Short:         "A tool to help with creating Talos cluster",
 	Long:          infoLongHelp,
 	SilenceUsage:  true,
