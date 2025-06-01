@@ -7,6 +7,7 @@ var (
 	SellPricesToday    []float64 = nil
 	TerugLevering      []float64 = nil
 	ACCharge           []int     = nil
+	MaxCharge          []int     = nil
 	CheapestPrice      float64   = 0
 	CheapestPriceIndex int       = 0
 	Inkoopkosten       float64   = 0
