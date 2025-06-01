@@ -36,8 +36,6 @@ type Response struct {
 	TimeSeries []TimeSeries `xml:"TimeSeries"`
 }
 
-var pricesToday, pricesTomorrow []float64
-
 func fetchPrices(start, end string) ([]float64, error) {
 	if securityToken == "" {
 		return nil, errors.New("ENTSOE API token is missing")
@@ -70,34 +68,45 @@ func fetchPrices(start, end string) ([]float64, error) {
 	}
 	return prices, nil
 }
+
+// BuyPriceToday calculates the corrected prices for today including fees and tax (BTW)
+func BuyPriceToday(pricesToday []float64) []float64 {
+	taxFactor := 1 + helper.BTW/100.0 // ensure float division
+	corrected := make([]float64, len(pricesToday))
+	for i, p := range pricesToday {
+		corrected[i] = (p + helper.Inkoopkosten + helper.Heffingen) * taxFactor
+	}
+	return corrected
+}
+
+func SellPriceToday(pricesToday []float64) []float64 {
+	sellPrices := make([]float64, len(pricesToday))
+	for i, p := range pricesToday {
+		sp := p + helper.SellPriceMod
+		if sp < 0 {
+			sp = 0
+		}
+		sellPrices[i] = sp
+	}
+	return sellPrices
+}
+
 func Fetch() {
 	now := time.Now().UTC()
-	startToday := now.Format("200601020000")
-	endTomorrow := now.Add(48 * time.Hour).Format("200601020000")
+	startToday := now.Truncate(24 * time.Hour).Format("200601020000")
+	endToday := now.Truncate(24 * time.Hour).Add(24 * time.Hour).Format("200601020000")
 
-	allPrices, err := fetchPrices(startToday, endTomorrow)
+	pricesToday, err := fetchPrices(startToday, endToday)
 	if err != nil {
-		log.Error().Msgf("Error fetching prices: %v", err)
+		log.Error().Msgf("Error fetching today's prices: %v", err)
 		os.Exit(1)
 	}
+	helper.PricesToday = pricesToday
 
-	// split into today (first 24) and tomorrow (next 24) if available
-	if len(allPrices) >= 24 {
-		helper.PricesToday = allPrices[:24]
-	}
+	helper.BuyPricesToday = BuyPriceToday(pricesToday)
+	helper.SellPricesToday = SellPriceToday(pricesToday)
 
-	if len(allPrices) >= 48 {
-		helper.PricesTomorrow = allPrices[24:48]
-		helper.PricesTomorrowAvailable = true
-	} else {
-		helper.PricesTomorrow = nil
-		helper.PricesTomorrowAvailable = false
-	}
-
-	// For demonstration only:
 	fmt.Println("Prices today:", helper.PricesToday)
-	if helper.PricesTomorrowAvailable {
-		fmt.Println("Prices tomorrow:", helper.PricesTomorrow)
-		fmt.Println("Tomorrow available?", helper.PricesTomorrowAvailable)
-	}
+	fmt.Println("Buy Prices today:", helper.BuyPricesToday)
+	fmt.Println("Sell Prices today:", helper.SellPricesToday)
 }
