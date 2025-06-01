@@ -1,4 +1,4 @@
-module github.com/PrivatePuffin/public/shem
+module github.com/PrivatePuffin/shem
 
 go 1.24.0
 

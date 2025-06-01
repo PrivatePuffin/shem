@@ -1,9 +1,11 @@
 package helper
 
 var (
-	IndexCache = "./index_cache"
-	GpgDir     = ".cr-gpg" // Adjust the path based on your project structure
-	Logo       = `
+	EntsoeAPIKey            string    = ""
+	PricesToday             []float64 = nil
+	PricesTomorrow          []float64 = nil
+	PricesTomorrowAvailable           = false
+	Logo                              = `
 Shem
 
 `

@@ -3,7 +3,7 @@ package cmd
 import (
 	"strings"
 
-	"github.com/PrivatePuffin/public/shem/pkg/info"
+	"github.com/PrivatePuffin/shem/pkg/info"
 	"github.com/spf13/cobra"
 )
 

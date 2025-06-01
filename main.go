@@ -8,8 +8,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/PrivatePuffin/public/shem/cmd"
-	"github.com/PrivatePuffin/public/shem/pkg/helper"
+	"github.com/PrivatePuffin/shem/cmd"
+	"github.com/PrivatePuffin/shem/pkg/helper"
 	"github.com/go-logr/zerologr"
 	k8slog "sigs.k8s.io/controller-runtime/pkg/log"
 )
