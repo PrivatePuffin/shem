@@ -6,8 +6,11 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/PrivatePuffin/shem/pkg/helper"
 )
 
+// PanelConfig defines one set of solar panels' parameters
 type PanelConfig struct {
 	Latitude     float64
 	Longitude    float64
@@ -16,7 +19,15 @@ type PanelConfig struct {
 	KilowattPeak float64
 }
 
-var Forecast []float64 // Summed hourly forecast in Wh (length 24)
+// Outputs accessible to other packages
+var (
+	SolarInput       []float64 // 24 hourly values, Wh per hour
+	TotalSolarDay    float64   // sum of SolarInput Wh
+	DailyUseSolarCov float64   // percentage of DailyUseEst covered by SolarInput
+)
+
+// Estimated daily use in Wh - set by the caller before FetchForecast
+var DailyUseEst float64
 
 const baseAPIURL = "https://api.forecast.solar/estimate"
 
@@ -28,10 +39,9 @@ type forecastSolarResponse struct {
 	} `json:"result"`
 }
 
-// FetchForecast fetches the solar forecast for multiple panel sets and sums the result
+// FetchForecast fetches solar forecasts for multiple panel configs, sums, and calculates coverage.
 func FetchForecast(panels []PanelConfig) error {
-	// Zero the forecast slice
-	Forecast = make([]float64, 24)
+	SolarInput = make([]float64, 24)
 
 	for _, panel := range panels {
 		url := fmt.Sprintf("%s/%.4f/%.4f/%.1f/%.1f/%.2f",
@@ -63,8 +73,21 @@ func FetchForecast(panels []PanelConfig) error {
 			if err != nil {
 				continue
 			}
-			Forecast[t.Hour()] += wh
+			helper.SolarInput[t.Hour()] += wh
 		}
+	}
+
+	// Calculate total solar input for the day (Wh)
+	helper.TotalSolarDay = 0
+	for _, val := range SolarInput {
+		helper.TotalSolarDay += val
+	}
+
+	// Calculate coverage percentage if DailyUseEst > 0
+	if helper.DailyUseEst > 0 {
+		helper.DailyUseSolarCov = (helper.TotalSolarDay / helper.DailyUseEst) * 100
+	} else {
+		helper.DailyUseSolarCov = 0
 	}
 
 	return nil
@@ -72,15 +95,15 @@ func FetchForecast(panels []PanelConfig) error {
 
 func Render() {
 	panels := []PanelConfig{
-		{Latitude: 52.52, Longitude: 13.405, Declination: 30, Azimuth: 180, KilowattPeak: 4.0}, // south-facing
-		{Latitude: 52.52, Longitude: 13.405, Declination: 20, Azimuth: 90, KilowattPeak: 1.5},  // east-facing
+		{Latitude: 52.52, Longitude: 13.405, Declination: 30, Azimuth: 180, KilowattPeak: 4.0},
+		{Latitude: 52.52, Longitude: 13.405, Declination: 20, Azimuth: 90, KilowattPeak: 1.5},
 	}
 
 	if err := FetchForecast(panels); err != nil {
 		log.Fatal(err)
 	}
 
-	for i, val := range Forecast {
-		fmt.Printf("Hour %02d: %.0f Wh\n", i, val)
-	}
+	fmt.Printf("Hourly Solar Input (Wh): %v\n", helper.SolarInput)
+	fmt.Printf("Total Solar Input Today (Wh): %.0f\n", helper.TotalSolarDay)
+	fmt.Printf("Percentage of Estimated Daily Use Covered: %.2f%%\n", helper.DailyUseSolarCov)
 }

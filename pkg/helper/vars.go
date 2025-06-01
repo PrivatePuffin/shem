@@ -2,6 +2,10 @@ package helper
 
 var (
 	EntsoeAPIKey       string    = ""
+	DailyUseEst        float64   = 30
+	DailyUseSolarCov   float64   = 0
+	SolarInput         []float64 = nil
+	TotalSolarDay      float64   = 0
 	PricesToday        []float64 = nil
 	BuyPricesToday     []float64 = nil
 	SellPricesToday    []float64 = nil
