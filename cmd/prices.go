@@ -19,6 +19,7 @@ var pricesCmd = &cobra.Command{
 	Example: "shem prices",
 	Run: func(cmd *cobra.Command, args []string) {
 		prices.Fetch()
+		prices.Render()
 	},
 }
 

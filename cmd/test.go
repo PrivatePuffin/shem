@@ -20,7 +20,8 @@ var testCmd = &cobra.Command{
 	Example: "shem test",
 	Run: func(cmd *cobra.Command, args []string) {
 		prices.Fetch()
-		power.Fetch()
+		prices.Render()
+		power.Render()
 	},
 }
 
