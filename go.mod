@@ -8,7 +8,6 @@ require (
 	github.com/beevik/ntp v1.4.3
 	github.com/go-logr/zerologr v1.2.3
 	github.com/joho/godotenv v1.5.1
-	github.com/leaanthony/debme v1.2.1
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/cobra v1.9.1
 	gopkg.in/yaml.v3 v3.0.1
